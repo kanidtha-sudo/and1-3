@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1.3 การใช้คำเชื่อม</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            box-sizing: border-box;
+        }
+        @import url('https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;600;700&display=swap');
+        body {
+            font-family: 'Prompt', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-purple-400 via-pink-400 to-red-400 min-h-full">
+    <div id="loginScreen" class="flex items-center justify-center min-h-full p-4">
+        <div class="bg-white rounded-3xl shadow-2xl p-8 w-full max-w-md">
+            <div class="text-center mb-8">
+                <h1 class="text-4xl font-bold text-purple-600 mb-2">🎮 1.3 การใช้คำเชื่อม</h1>
+                <p class="text-gray-600">กรุณาเข้าสู่ระบบเพื่อเริ่มเล่น</p>
+            </div>
+            <form id="loginForm" class="space-y-6">
+                <div>
+                    <label for="username" class="block text-sm font-semibold text-gray-700 mb-2">ชื่อผู้ใช้</label>
+                    <input type="text" id="username" required class="w-full px-4 py-3 border-2 border-purple-200 rounded-xl focus:outline-none focus:border-purple-500 transition-colors">
+                </div>
+                <div>
+                    <label for="password" class="block text-sm font-semibold text-gray-700 mb-2">รหัสผ่าน</label>
+                    <input type="password" id="password" required class="w-full px-4 py-3 border-2 border-purple-200 rounded-xl focus:outline-none focus:border-purple-500 transition-colors">
+                </div>
+                <button type="submit" class="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold py-3 rounded-xl hover:from-purple-600 hover:to-pink-600 transform hover:scale-105 transition-all shadow-lg">
+                    เข้าสู่ระบบ
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div id="stageSelectScreen" class="hidden flex items-center justify-center min-h-full p-4">
+        <div class="bg-white rounded-3xl shadow-2xl p-8 w-full max-w-md">
+            <div class="text-center mb-8">
+                <h2 class="text-3xl font-bold text-purple-600">สวัสดี <span id="playerNameSelect" class="text-pink-500"></span>! 👋</h2>
+                <p class="text-gray-600 mt-1">เลือกด่านที่ต้องการเล่น</p>
+            </div>
+            <div class="space-y-4">
+                <button id="stage1Btn" class="w-full bg-gradient-to-r from-blue-500 to-purple-500 text-white font-bold py-4 rounded-xl hover:from-blue-600 hover:to-purple-600 transform hover:scale-105 transition-all shadow-lg">
+                    <div class="text-xl mb-1">🎯 ด่านที่ 1</div>
+                    <div class="text-sm opacity-90">คำเชื่อมประเภทที่ 1</div>
+                    <div class="text-xs opacity-75">(ทั้งนี้, ในการนี้, อนึ่ง, อย่างไรก็ตาม, อย่างไรก็ดี)</div>
+                </button>
+                <button id="stage2Btn" class="w-full bg-gradient-to-r from-pink-500 to-red-500 text-white font-bold py-4 rounded-xl hover:from-pink-600 hover:to-red-600 transform hover:scale-105 transition-all shadow-lg">
+                    <div class="text-xl mb-1">🚀 ด่านที่ 2</div>
+                    <div class="text-sm opacity-90">คำเชื่อมประเภทที่ 2</div>
+                    <div class="text-xs opacity-75">(ที่, ซึ่ง, อัน, และ, เพราะ, หรือ, แต่, ฉะนั้น, จึง)</div>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="gameScreen" class="hidden min-h-full p-4">
+        <div class="max-w-6xl mx-auto">
+            <div class="bg-white rounded-3xl shadow-2xl p-8 mb-6">
+                <div class="flex justify-between items-center mb-8">
+                    <div>
+                        <h2 class="text-3xl font-bold text-purple-600">ด่านที่ <span id="currentStageDisplay">1</span></h2>
+                        <p class="text-gray-600 mt-1">เติมคำเชื่อมให้ถูกต้องในทุกข้อ แล้วกดส่งคำตอบ</p>
+                    </div>
+                    <button id="backToStageBtn" class="bg-gray-500 text-white font-semibold py-2 px-4 rounded-xl hover:bg-gray-600 transition-colors">
+                        ← กลับไปเลือกด่าน
+                    </button>
+                </div>
+
+                <div id="allQuestionsContainer" class="space-y-8 mb-8">
+                    <!-- Questions will be loaded here -->
+                </div>
+
+                <div class="text-center">
+                    <button id="submitBtn" class="bg-gradient-to-r from-green-500 to-teal-500 text-white font-bold py-4 px-12 rounded-xl hover:from-green-600 hover:to-teal-600 transform hover:scale-105 transition-all shadow-lg text-xl">
+                        ส่งคำตอบทั้งหมด 📝
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="resultScreen" class="hidden min-h-full p-4">
+        <div class="max-w-6xl mx-auto">
+            <div class="bg-white rounded-3xl shadow-2xl p-8 mb-6">
+                <div class="text-center mb-8">
+                    <div class="text-6xl mb-4">🎉</div>
+                    <h2 class="text-3xl font-bold text-purple-600 mb-4">เสร็จสิ้น!</h2>
+                    <div class="bg-gradient-to-r from-purple-50 to-pink-50 rounded-2xl p-6 mb-6 inline-block">
+                        <p class="text-gray-700 mb-2">คุณทำได้</p>
+                        <p class="text-5xl font-bold text-purple-600 mb-2"><span id="correctCount">0</span>/40</p>
+                        <p class="text-gray-700 mb-4">ข้อถูกต้อง</p>
+                        <div class="border-t-2 border-purple-200 pt-4">
+                            <p class="text-gray-700 mb-2">คะแนนที่ได้</p>
+                            <p class="text-6xl font-bold text-pink-500"><span id="finalScore">0</span></p>
+                            <p class="text-gray-600 mt-2">คะแนน</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-8">
+                    <h3 class="text-2xl font-bold text-purple-600 mb-6 text-center">📝 เฉลยคำตอบ</h3>
+                    <div id="answerReview" class="space-y-6">
+                        <!-- Answer review will be loaded here -->
+                    </div>
+                </div>
+
+                <div class="text-center">
+                    <button id="restartBtn" class="bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold py-3 px-8 rounded-xl hover:from-purple-600 hover:to-pink-600 transform hover:scale-105 transition-all shadow-lg">
+                        เล่นอีกครั้ง
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const stage1Questions = [
+            { 
+                question: "_____ การอบรมดังกล่าวมีจุดมุ่งหมายเพื่อให้ผู้เรียนตระหนักถึงการใช้อุปกรณ์อย่างถูกต้องและลดความเสี่ยงจากอุบัติเหตุในขณะปฏิบัติงาน", 
+                choices: ["อนึ่ง", "ทั้งนี้", "ในการนี้", "อย่างไรก็ตาม", "อย่างไรก็ดี"], 
+                answer: "อนึ่ง" 
+            },
+            { 
+                question: "_____ ขอความร่วมมือครูที่ปรึกษาทุกท่านนำนักเรียนแต่งกายด้วยชุดสุภาพและเข้าร่วมพิธีวางพานพุ่มดอกไม้เพื่อถวายราชสักการะตามกำหนดเวลา", 
+                choices: ["ในการนี้", "ทั้งนี้", "อนึ่ง", "อย่างไรก็ตาม", "อย่างไรก็ดี"], 
+                answer: "ในการนี้" 
+            },
+            { 
+                question: "_____ ขอให้ทุกหน่วยงานที่เกี่ยวข้องนำข้อเสนอแนะดังกล่าวไปใช้ในการวางแผนและพัฒนาโครงการต่อไป", 
+                choices: ["ทั้งนี้", "ในการนี้", "อนึ่ง", "อย่างไรก็ตาม", "อย่างไรก็ดี"], 
+                answer: "ทั้งนี้" 
+            },
+            { 
+                question: "การดำเนินโครงการพัฒนาทักษะอาชีพนักเรียนเป็นไปอย่างเรียบร้อยและได้รับความร่วมมือจากทุกฝ่าย _____ ยังมีบางกลุ่มที่ต้องการการฝึกฝนเพิ่มเติม", 
+                choices: ["อย่างไรก็ตาม", "อย่างไรก็ดี", "ในการนี้", "ทั้งนี้", "อนึ่ง"], 
+                answer: "อย่างไรก็ตาม" 
+            },
+            { 
+                question: "วิทยาลัยได้รับงบประมาณสนับสนุนจากภาครัฐในการจัดซื้ออุปกรณ์คอมพิวเตอร์เพิ่มเติม _____ เนื่องจากจำนวนงบประมาณที่ได้รับมีจำกัด จึงอาจไม่ครอบคลุมทุกห้องปฏิบัติการในภาคเรียนนี้", 
+                choices: ["อย่างไรก็ดี", "อย่างไรก็ตาม", "ทั้งนี้", "ในการนี้", "อนึ่ง"], 
+                answer: "อย่างไรก็ดี" 
+            },
+            { 
+                question: "_____ ผลการประเมินดังกล่าวจะนำไปใช้ในการพัฒนาการจัดการเรียนรู้ให้สอดคล้องกับความต้องการของผู้เรียนมากยิ่งขึ้น", 
+                choices: ["อนึ่ง", "ทั้งนี้", "ในการนี้", "อย่างไรก็ตาม", "อย่างไรก็ดี"], 
+                answer: "อนึ่ง" 
+            },
+            { 
+                question: "_____ ขอให้หัวหน้าแผนกวิชาแจ้งรายชื่อผู้เข้าร่วมอบรมภายในวันที่ 12 พฤศจิกายน 2568 เพื่อจัดทำรายชื่อผู้เข้าร่วมอย่างเป็นทางการ", 
+                choices: ["ในการนี้", "ทั้งนี้", "อนึ่ง", "อย่างไรก็ตาม", "อย่างไรก็ดี"], 
+                answer: "ในการนี้" 
+            },
+            { 
+                question: "_____ หากได้รับความเห็นชอบแล้วจะดำเนินการตามแผนงานที่กำหนดทันที เพื่อให้การดำเนินโครงการเป็นไปตามกำหนดเวลา", 
+                choices: ["ทั้งนี้", "ในการนี้", "อนึ่ง", "อย่างไรก็ตาม", "อย่างไรก็ดี"], 
+                answer: "ทั้งนี้" 
+            },
+            { 
+                question: "วิทยาลัยได้จัดตั้งศูนย์แนะแนวการศึกษาต่อ _____ นักเรียนได้รับข้อมูลที่ถูกต้องและเป็นประโยชน์ต่อการวางแผนอนาคต", 
+                choices: ["เพื่อให้", "ทั้งนี้", "ในการนี้", "อนึ่ง", "อย่างไรก็ตาม"], 
+                answer: "เพื่อให้" 
+            },
+            { 
+                question: "_____ ขอให้ครูที่ปรึกษาแจ้งนักเรียนทุกคนเข้ารับคำปรึกษาตามวันและเวลาที่กำหนด เพื่อให้การดำเนินงานบรรลุวัตถุประสงค์อย่างมีประสิทธิภาพ", 
+                choices: ["อย่างไรก็ดี", "อย่างไรก็ตาม", "ทั้งนี้", "ในการนี้", "อนึ่ง"], 
+                answer: "อย่างไรก็ดี" 
+            },
+            { 
+                question: "_____ การจัดโครงการดังกล่าวมีวัตถุประสงค์เพื่อส่งเสริมให้นักเรียนมีทักษะในการใช้งานโปรแกรมคอมพิวเตอร์อย่างมีประสิทธิภาพ", 
+                choices: ["อนึ่ง", "ทั้งนี้", "ในการนี้", "อย่างไรก็ตาม", "อย่างไรก็ดี"], 
+                answer: "อนึ่ง" 
+            },
+            { 
+                question: "_____ จึงขอความร่วมมือจากครูและบุคลากรทุกท่านแต่งกายด้วยชุดสุภาพ และเข้าร่วมกิจกรรมตามกำหนดเวลา", 
+                choices: ["ในการนี้", "ทั้งนี้", "อนึ่ง", "อย่างไรก็ตาม", "อย่างไรก็ดี"], 
+                answer: "ในการนี้" 
+            },
+            { 
+                question: "_____ ขอให้ครูผู้สอนทุกท่านส่งผลการประเมินภายในวันที่ 5 พฤศจิกายน 2568 เพื่อให้ฝ่ายทะเบียนสามารถดำเนินการบันทึกผลได้ตามกำหนด", 
+                choices: ["ทั้งนี้", "ในการนี้", "อนึ่ง", "อย่างไรก็ตาม", "อย่างไรก็ดี"], 
+                answer: "ทั้งนี้" 
+            },
+            { 
+                question: "จากการประเมินผลการจัดกิจกรรมจิตอาสา พบว่านักเรียนส่วนใหญ่ให้ความร่วมมือเป็นอย่างดี _____ ยังมีบางส่วนที่ต้องปรับปรุงเรื่องระเบียบวินัย", 
+                choices: ["อย่างไรก็ตาม", "อย่างไรก็ดี", "ในการนี้", "ทั้งนี้", "อนึ่ง"], 
+                answer: "อย่างไรก็ตาม" 
+            },
+            { 
+                question: "วิทยาลัยเทคนิคปทุมธานีมีนโยบายพัฒนาคุณภาพผู้เรียนด้านทักษะการสื่อสารภาษาอังกฤษอย่างต่อเนื่อง _____ การดำเนินงานเป็นไปอย่างมีประสิทธิภาพ", 
+                choices: ["เพื่อให้", "อย่างไรก็ดี", "ทั้งนี้", "ในการนี้", "อนึ่ง"], 
+                answer: "เพื่อให้" 
+            }
+        ];
+
+        const stage2Questions = [
+            { 
+                question: "ขออนุญาตใช้ห้องประชุม _____ อาคารอำนวยการ ชั้น 3 ในวันที่ 10 พฤศจิกายน 2568", 
+                choices: ["ที่", "ซึ่ง", "อัน", "และ", "เพราะ", "หรือ", "แต่", "ฉะนั้น", "จึง"], 
+                answer: "ที่" 
+            },
+            { 
+                question: "รายชื่อผู้เข้าร่วมอบรมตามเอกสารแนบ _____ ส่งมาพร้อมนี้", 
+                choices: ["ที่", "ซึ่ง", "อัน", "และ", "เพราะ", "หรือ", "แต่", "ฉะนั้น", "จึง"], 
+                answer: "ที่" 
+            },
+            { 
+                question: "นักเรียน _____ มีรายชื่อตามบัญชีแนบ ให้มารายงานตัวภายในกำหนดเวลา", 
+                choices: ["ที่", "ซึ่ง", "อัน", "และ", "เพราะ", "หรือ", "แต่", "ฉะนั้น", "จึง"], 
+                answer: "ที่" 
+            },
+            { 
+                question: "หนังสือเล่มนี้เป็นเอกสาร _____ ใช้ประกอบการประชุม", 
+                choices: ["ที่", "ซึ่ง", "อัน", "และ", "เพราะ", "หรือ", "แต่", "ฉะนั้น", "จึง"], 
+                answer: "ที่" 
+            },
+            { 
+                question: "งานดังกล่าวเป็นโครงการ _____ จัดขึ้นเพื่อพัฒนาทักษะของนักเรียน", 
+                choices: ["ที่", "ซึ่ง", "อัน", "และ", "เพราะ", "หรือ", "แต่", "ฉะนั้น", "จึง"], 
+                answer: "ที่" 
+            },
+            { 
+                question: "โครงการนี้ได้รับงบประมาณสนับสนุนจากสำนักงานคณะกรรมการการอาชีวศึกษา _____ เป็นหน่วยงานต้นสังกัด", 
+                choices: ["ที่", "ซึ่ง", "อัน", "และ", "เพราะ", "หรือ", "แต่", "ฉะนั้น", "จึง"], 
+                answer: "ซึ่ง" 
+            },
+            { 
+                question: "นักเรียน _____ มีผลการเรียนดีเด่น จะได้รับเกียรติบัตรในวันปัจฉิมนิเทศ", 
+                choices: ["ที่", "ซึ่ง", "อัน", "และ", "เพราะ", "หรือ", "แต่", "ฉะนั้น", "จึง"], 
+                answer: "ซึ่ง" 
+            },
+            { 
+                question: "ครูที่ปรึกษา _____ รับผิดชอบกลุ่มเรียนนี้ได้ตรวจสอบรายชื่อเรียบร้อยแล้ว", 
+                choices: ["ที่", "ซึ่ง", "อัน", "และ", "เพราะ", "หรือ", "แต่", "ฉะนั้น", "จึง"], 
+                answer: "ซึ่ง" 
+            },
+            { 
+                question: "รายงานฉบับนี้เป็นผลการดำเนินงาน _____ สรุปจากแบบประเมิน", 
+                choices: ["ที่", "ซึ่ง", "อัน", "และ", "เพราะ", "หรือ", "แต่", "ฉะนั้น", "จึง"], 
+                answer: "ซึ่ง" 
+            },
+            { 
+                question: "วิทยาลัยฯ ได้จัดกิจกรรมอบรมคุณธรรม _____ มีวัตถุประสงค์เพื่อปลูกฝังจิตสำนึกที่ดีให้แก่นักเรียน", 
+                choices: ["ที่", "ซึ่ง", "อัน", "และ", "เพราะ", "หรือ", "แต่", "ฉะนั้น", "จึง"], 
+                answer: "ซึ่ง" 
+            },
+            { 
+                question: "เพื่อเป็นการส่งเสริมคุณธรรมและจริยธรรม _____ เป็นพื้นฐานของการดำรงชีวิตที่ดี", 
+                choices: ["ที่", "ซึ่ง", "อัน", "และ", "เพราะ", "หรือ", "แต่", "ฉะนั้น", "จึง"], 
+                answer: "อัน" 
+            },
+            { 
+                question: "ขออนุญาตนำเสนอรายงานผลการดำเนินงาน _____ เป็นประโยชน์ต่อการพัฒนาการเรียนการสอน", 
+                choices: ["ที่", "ซึ่ง", "อัน", "และ", "เพราะ", "หรือ", "แต่", "ฉะนั้น", "จึง"], 
+                answer: "อัน" 
+            },
+            { 
+                question: "การจัดกิจกรรมครั้งนี้มีวัตถุประสงค์ _____ ชัดเจนในการพัฒนาทักษะอาชีพ", 
+                choices: ["ที่", "ซึ่ง", "อัน", "และ", "เพราะ", "หรือ", "แต่", "ฉะนั้น", "จึง"], 
+                answer: "อัน" 
+            },
+            { 
+                question: "ข้าพเจ้าขอขอบพระคุณในความอนุเคราะห์ _____ ล้นพ้น", 
+                choices: ["ที่", "ซึ่ง", "อัน", "และ", "เพราะ", "หรือ", "แต่", "ฉะนั้น", "จึง"], 
+                answer: "อัน" 
+            },
+            { 
+                question: "การดำเนินโครงการนี้เป็นกิจกรรม _____ สืบเนื่องจากนโยบายของกระทรวง", 
+                choices: ["ที่", "ซึ่ง", "อัน", "และ", "เพราะ", "หรือ", "แต่", "ฉะนั้น", "จึง"], 
+                answer: "อัน" 
+            },
+            { 
+                question: "วิทยาลัยได้จัดกิจกรรมอบรมคุณธรรม _____ จิตอาสาแก่นักเรียน", 
+                choices: ["ที่", "ซึ่ง", "อัน", "และ", "เพราะ", "หรือ", "แต่", "ฉะนั้น", "จึง"], 
+                answer: "และ" 
+            },
+            { 
+                question: "ครูผู้สอนตรวจสอบรายชื่อนักเรียน _____ ผลการเรียนเรียบร้อยแล้ว", 
+                choices: ["ที่", "ซึ่ง", "อัน", "และ", "เพราะ", "หรือ", "แต่", "ฉะนั้น", "จึง"], 
+                answer: "และ" 
+            },
+            { 
+                question: "ขอความร่วมมือครูทุกท่านประชาสัมพันธ์กิจกรรม _____ ดูแลนักเรียนอย่างใกล้ชิด", 
+                choices: ["ที่", "ซึ่ง", "อัน", "และ", "เพราะ", "หรือ", "แต่", "ฉะนั้น", "จึง"], 
+                answer: "และ" 
+            },
+            { 
+                question: "นักเรียนเข้าร่วมกิจกรรมอย่างตั้งใจ _____ ปฏิบัติตามระเบียบอย่างเคร่งครัด", 
+                choices: ["ที่", "ซึ่ง", "อัน", "และ", "เพราะ", "หรือ", "แต่", "ฉะนั้น", "จึง"], 
+                answer: "และ" 
+            },
+            { 
+                question: "วิทยาลัยเทคนิคปทุมธานีขอขอบคุณคณะผู้บริหาร _____ บุคลากรทุกท่าน", 
+                choices: ["ที่", "ซึ่ง", "อัน", "และ", "เพราะ", "หรือ", "แต่", "ฉะนั้น", "จึง"], 
+                answer: "และ" 
+            },
+            { 
+                question: "ขอเลื่อนการจัดกิจกรรมออกไป _____ ติดภารกิจสำคัญของหน่วยงาน", 
+                choices: ["ที่", "ซึ่ง", "อัน", "และ", "เพราะ", "หรือ", "แต่", "ฉะนั้น", "จึง"], 
+                answer: "เพราะ" 
+            },
+            { 
+                question: "นักเรียนไม่สามารถเข้าร่วมอบรมได้ _____ ป่วยกะทันหัน", 
+                choices: ["ที่", "ซึ่ง", "อัน", "และ", "เพราะ", "หรือ", "แต่", "ฉะนั้น", "จึง"], 
+                answer: "เพราะ" 
+            },
+            { 
+                question: "ขออนุมัติจัดซื้อวัสดุเพิ่มเติม _____ ของเดิมชำรุดและไม่สามารถใช้งานได้", 
+                choices: ["ที่", "ซึ่ง", "อัน", "และ", "เพราะ", "หรือ", "แต่", "ฉะนั้น", "จึง"], 
+                answer: "เพราะ" 
+            },
+            { 
+                question: "ขอเลื่อนการส่งรายงาน _____ ยังไม่แล้วเสร็จตามกำหนด", 
+                choices: ["ที่", "ซึ่ง", "อัน", "และ", "เพราะ", "หรือ", "แต่", "ฉะนั้น", "จึง"], 
+                answer: "เพราะ" 
+            },
+            { 
+                question: "โครงการไม่สามารถดำเนินการได้ _____ งบประมาณไม่เพียงพอ", 
+                choices: ["ที่", "ซึ่ง", "อัน", "และ", "เพราะ", "หรือ", "แต่", "ฉะนั้น", "จึง"], 
+                answer: "เพราะ" 
+            },
+            { 
+                question: "ขอความร่วมมือครูที่ปรึกษาแจ้งนักเรียนที่ลืมบัตรนักเรียน _____ บัตรประชาชน ให้มาติดต่อที่ฝ่ายอำนวยการ", 
+                choices: ["ที่", "ซึ่ง", "อัน", "และ", "เพราะ", "หรือ", "แต่", "ฉะนั้น", "จึง"], 
+                answer: "หรือ" 
+            },
+            { 
+                question: "หากมีข้อสงสัย _____ ต้องการข้อมูลเพิ่มเติม สามารถติดต่อได้ที่งานทะเบียน", 
+                choices: ["ที่", "ซึ่ง", "อัน", "และ", "เพราะ", "หรือ", "แต่", "ฉะนั้น", "จึง"], 
+                answer: "หรือ" 
+            },
+            { 
+                question: "ผู้เข้าร่วมอบรมสามารถแต่งกายด้วยชุดสุภาพ _____ ชุดนักศึกษาตามระเบียบ", 
+                choices: ["ที่", "ซึ่ง", "อัน", "และ", "เพราะ", "หรือ", "แต่", "ฉะนั้น", "จึง"], 
+                answer: "หรือ" 
+            },
+            { 
+                question: "นักเรียนสามารถส่งรายงานทางอีเมล _____ ยื่นด้วยตนเอง", 
+                choices: ["ที่", "ซึ่ง", "อัน", "และ", "เพราะ", "หรือ", "แต่", "ฉะนั้น", "จึง"], 
+                answer: "หรือ" 
+            },
+            { 
+                question: "หากไม่สะดวกเข้าร่วมในวันดังกล่าว _____ มีเหตุจำเป็น ให้แจ้งล่วงหน้า", 
+                choices: ["ที่", "ซึ่ง", "อัน", "และ", "เพราะ", "หรือ", "แต่", "ฉะนั้น", "จึง"], 
+                answer: "หรือ" 
+            },
+            { 
+                question: "วิทยาลัยมีความประสงค์จะดำเนินโครงการต่อเนื่อง _____ เนื่องจากงบประมาณจำกัด จึงขอเลื่อนออกไป", 
+                choices: ["ที่", "ซึ่ง", "อัน", "และ", "เพราะ", "หรือ", "แต่", "ฉะนั้น", "จึง"], 
+                answer: "แต่" 
+            },
+            { 
+                question: "ครูผู้สอนได้ตรวจสอบข้อมูลแล้ว _____ ยังขาดเอกสารแนบบางส่วน", 
+                choices: ["ที่", "ซึ่ง", "อัน", "และ", "เพราะ", "หรือ", "แต่", "ฉะนั้น", "จึง"], 
+                answer: "แต่" 
+            },
+            { 
+                question: "นักเรียนส่วนใหญ่เข้าร่วมกิจกรรม _____ บางคนยังไม่ส่งใบงาน", 
+                choices: ["ที่", "ซึ่ง", "อัน", "และ", "เพราะ", "หรือ", "แต่", "ฉะนั้น", "จึง"], 
+                answer: "แต่" 
+            },
+            { 
+                question: "ขออนุมัติเปลี่ยนแปลงสถานที่จัดอบรม _____ ยังคงกำหนดวันเวลาเดิม", 
+                choices: ["ที่", "ซึ่ง", "อัน", "และ", "เพราะ", "หรือ", "แต่", "ฉะนั้น", "จึง"], 
+                answer: "แต่" 
+            },
+            { 
+                question: "ผลการดำเนินงานเป็นไปตามเป้าหมาย _____ ต้องปรับปรุงบางประเด็น", 
+                choices: ["ที่", "ซึ่ง", "อัน", "และ", "เพราะ", "หรือ", "แต่", "ฉะนั้น", "จึง"], 
+                answer: "แต่" 
+            },
+            { 
+                question: "วิทยาลัยได้ประเมินความพร้อมของสถานที่เรียบร้อยแล้ว _____ ขออนุมัติจัดกิจกรรมในวันดังกล่าว", 
+                choices: ["ที่", "ซึ่ง", "อัน", "และ", "เพราะ", "หรือ", "แต่", "ฉะนั้น", "จึง"], 
+                answer: "ฉะนั้น" 
+            },
+            { 
+                question: "ครูผู้สอนมีภารกิจอบรมต่างจังหวัด _____ ขออนุญาตมอบหมายงานแทน", 
+                choices: ["ที่", "ซึ่ง", "อัน", "และ", "เพราะ", "หรือ", "แต่", "ฉะนั้น", "จึง"], 
+                answer: "ฉะนั้น" 
+            },
+            { 
+                question: "นักเรียนมีความสนใจเข้าร่วมจำนวนมาก _____ ขอขยายเวลารับสมัคร", 
+                choices: ["ที่", "ซึ่ง", "อัน", "และ", "เพราะ", "หรือ", "แต่", "ฉะนั้น", "จึง"], 
+                answer: "ฉะนั้น" 
+            },
+            { 
+                question: "การดำเนินงานเป็นไปตามวัตถุประสงค์ _____ ขอรายงานผลการดำเนินงานเพื่อทราบ", 
+                choices: ["ที่", "ซึ่ง", "อัน", "และ", "เพราะ", "หรือ", "แต่", "ฉะนั้น", "จึง"], 
+                answer: "จึง" 
+            },
+            { 
+                question: "โครงการนี้ได้รับความร่วมมือจากทุกฝ่าย _____ ได้รับรางวัลการปฏิบัติโครงการยอดเยี่ยม", 
+                choices: ["ที่", "ซึ่ง", "อัน", "และ", "เพราะ", "หรือ", "แต่", "ฉะนั้น", "จึง"], 
+                answer: "จึง" 
+            }
+        ];
+
+        let playerName = "";
+        let userAnswers = {};
+        let currentStage = 1;
+        let currentQuestions = [];
+
+        // ฟังก์ชันสุ่มข้อสอบ
+        function shuffleArray(array) {
+            const shuffled = [...array];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
+        }
+
+        const explanations = {
+            "ทั้งนี้": "ใช้ต้นข้อความ หมายความว่า ตามที่กล่าวมานี้ ใช้ในกรณีกล่าวเพิ่มเติมเรื่องราวที่กล่าวมาแล้ว",
+            "ในการนี้": "หมายความว่า ในการดำเนินการดังที่กล่าวข้างต้นนี้ ใช้กล่าวแทนข้อความที่กล่าวไปแล้ว เป็นการเพิ่มเติมว่าจะมีการดำเนินการอย่างไรต่อไป",
+            "อนึ่ง": "หมายความว่า อีกอย่างหนึ่ง อีกประการหนึ่ง ใช้ในกรณีที่จะกล่าวเพิ่มเติม แต่ไม่สามารถใช้คำว่า และ ได้",
+            "อย่างไรก็ตาม": "หมายความว่า ถึงเช่นนั้น แม้กระนั้น แต่ ใช้กล่าวเพิ่มเติมในกรณีที่ขัดแย้งกับข้อความที่กล่าวข้างต้น มีลักษณะผ่อนปรน นุ่มนวล เห็นอกเห็นใจ",
+            "อย่างไรก็ดี": "หมายความว่า ถึงเช่นนั้น แม้กระนั้น แต่ ใช้กล่าวเพิ่มเติมในกรณีที่ขัดแย้งกับข้อความที่กล่าวข้างต้น มีลักษณะผ่อนปรน นุ่มนวล เห็นอกเห็นใจ",
+            "เพื่อให้": "ใช้เชื่อมประโยคแสดงจุดประสงค์ เป้าหมาย หรือผลที่ต้องการให้เกิดขึ้น",
+            "ที่": "ใช้เชื่อมคำหรือวลีที่ทำหน้าที่ขยายคำนาม แสดงลักษณะ สถานที่ เวลา",
+            "ซึ่ง": "ใช้เชื่อมประโยคที่ทำหน้าที่ขยายคำนาม แสดงลักษณะเพิ่มเติม",
+            "อัน": "ใช้เชื่อมคำหรือวลีที่ทำหน้าที่ขยายคำนาม (ใช้ในภาษาเขียนเป็นทางการ)",
+            "และ": "ใช้เชื่อมคำ วลี หรือประโยคที่มีความหมายเพิ่มเติมหรือคล้ายคลึงกัน",
+            "เพราะ": "ใช้เชื่อมประโยคแสดงเหตุผล สาเหตุ",
+            "หรือ": "ใช้เชื่อมคำ วลี หรือประโยคแสดงทางเลือก",
+            "แต่": "ใช้เชื่อมประโยคที่มีความหมายขัดแย้งหรือตรงข้ามกัน",
+            "ฉะนั้น": "ใช้เชื่อมประโยคแสดงผลที่ตามมา สรุป",
+            "จึง": "ใช้เชื่อมประโยคแสดงผลที่ตามมา เป็นเหตุเป็นผล"
+        };
+
+        const loginScreen = document.getElementById('loginScreen');
+        const stageSelectScreen = document.getElementById('stageSelectScreen');
+        const gameScreen = document.getElementById('gameScreen');
+        const resultScreen = document.getElementById('resultScreen');
+        const loginForm = document.getElementById('loginForm');
+        const allQuestionsContainer = document.getElementById('allQuestionsContainer');
+        const submitBtn = document.getElementById('submitBtn');
+        const playerNameSpan = document.getElementById('playerName');
+        const playerNameSelect = document.getElementById('playerNameSelect');
+        const currentStageDisplay = document.getElementById('currentStageDisplay');
+        const stage1Btn = document.getElementById('stage1Btn');
+        const stage2Btn = document.getElementById('stage2Btn');
+        const backToStageBtn = document.getElementById('backToStageBtn');
+        const correctCountSpan = document.getElementById('correctCount');
+        const finalScoreSpan = document.getElementById('finalScore');
+        const restartBtn = document.getElementById('restartBtn');
+
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            playerName = document.getElementById('username').value;
+            playerNameSelect.textContent = playerName;
+            loginScreen.classList.add('hidden');
+            stageSelectScreen.classList.remove('hidden');
+        });
+
+        stage1Btn.addEventListener('click', function() {
+            currentStage = 1;
+            currentQuestions = shuffleArray(stage1Questions);
+            currentStageDisplay.textContent = '1';
+            stageSelectScreen.classList.add('hidden');
+            gameScreen.classList.remove('hidden');
+            loadAllQuestions();
+        });
+
+        stage2Btn.addEventListener('click', function() {
+            currentStage = 2;
+            currentQuestions = shuffleArray(stage2Questions);
+            currentStageDisplay.textContent = '2';
+            stageSelectScreen.classList.add('hidden');
+            gameScreen.classList.remove('hidden');
+            loadAllQuestions();
+        });
+
+        backToStageBtn.addEventListener('click', function() {
+            gameScreen.classList.add('hidden');
+            stageSelectScreen.classList.remove('hidden');
+            userAnswers = {};
+        });
+
+        function loadAllQuestions() {
+            allQuestionsContainer.innerHTML = "";
+            
+            currentQuestions.forEach((question, index) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = "bg-gradient-to-r from-purple-50 to-pink-50 rounded-2xl p-6 border-2 border-purple-200";
+                
+                const questionNumber = index + 1;
+                const questionId = `question_${index}`;
+                
+                questionDiv.innerHTML = `
+                    <div class="mb-4">
+                        <h3 class="text-lg font-bold text-purple-600 mb-3">ข้อ ${questionNumber}</h3>
+                        <p class="text-gray-800 leading-relaxed" id="questionText_${index}"></p>
+                    </div>
+                    
+                    <div>
+                        <p class="text-sm font-semibold text-gray-700 mb-3">เลือกคำเชื่อม:</p>
+                        <div class="flex flex-wrap gap-2" id="choices_${index}"></div>
+                    </div>
+                `;
+                
+                allQuestionsContainer.appendChild(questionDiv);
+                
+                // แสดงโจทย์โดยแทนที่ _____ ด้วย span สำหรับแสดงคำตอบ
+                const questionTextElement = document.getElementById(`questionText_${index}`);
+                const questionWithBlank = question.question.replace('_____', `<span id="blank_${index}" class="bg-yellow-200 px-2 py-1 rounded font-bold text-purple-600 border-2 border-yellow-400">_____</span>`);
+                questionTextElement.innerHTML = questionWithBlank;
+                
+                // สร้างปุ่มตัวเลือก
+                const choicesContainer = document.getElementById(`choices_${index}`);
+                // ด่านที่ 1 สุ่มตัวเลือก, ด่านที่ 2 ไม่สุ่มตัวเลือก
+                const choicesToShow = currentStage === 1 ? shuffleArray(question.choices) : question.choices;
+                
+                choicesToShow.forEach(choice => {
+                    const button = document.createElement('button');
+                    button.textContent = choice;
+                    button.className = "bg-gradient-to-r from-blue-400 to-blue-500 text-white font-semibold py-2 px-3 rounded-lg hover:from-blue-500 hover:to-blue-600 transform hover:scale-105 transition-all shadow-md whitespace-nowrap";
+                    button.onclick = function() {
+                        selectAnswer(index, choice);
+                    };
+                    choicesContainer.appendChild(button);
+                });
+            });
+        }
+
+        function selectAnswer(questionIndex, selectedChoice) {
+            userAnswers[questionIndex] = selectedChoice;
+            
+            // อัพเดทในช่องว่างของโจทย์
+            const blankElement = document.getElementById(`blank_${questionIndex}`);
+            blankElement.textContent = selectedChoice;
+            blankElement.classList.remove('bg-yellow-200', 'border-yellow-400');
+            blankElement.classList.add('bg-green-200', 'border-green-400');
+        }
+
+        submitBtn.addEventListener('click', function() {
+            let correctAnswers = 0;
+            
+            currentQuestions.forEach((question, index) => {
+                if (userAnswers[index] === question.answer) {
+                    correctAnswers++;
+                }
+            });
+            
+            gameScreen.classList.add('hidden');
+            resultScreen.classList.remove('hidden');
+            correctCountSpan.textContent = correctAnswers;
+            
+            // คำนวณคะแนน: 8 ข้อ = 1 คะแนน
+            const score = Math.floor(correctAnswers / 8);
+            finalScoreSpan.textContent = score;
+            
+            // แสดงเฉลยคำตอบ
+            showAnswerReview();
+        });
+
+        function showAnswerReview() {
+            const answerReviewContainer = document.getElementById('answerReview');
+            answerReviewContainer.innerHTML = "";
+            
+            currentQuestions.forEach((question, index) => {
+                const userAnswer = userAnswers[index] || "ไม่ได้เลือก";
+                const isCorrect = userAnswer === question.answer;
+                
+                const reviewDiv = document.createElement('div');
+                reviewDiv.className = `border-2 rounded-2xl p-6 ${isCorrect ? 'border-green-400 bg-green-50' : 'border-red-400 bg-red-50'}`;
+                
+                const questionNumber = index + 1;
+                
+                reviewDiv.innerHTML = `
+                    <div class="flex items-start gap-4 mb-4">
+                        <div class="text-2xl">${isCorrect ? '✅' : '❌'}</div>
+                        <div class="flex-1">
+                            <h4 class="text-lg font-bold text-gray-800 mb-2">ข้อ ${questionNumber}</h4>
+                            <p class="text-gray-700 leading-relaxed mb-3">${question.question.replace('_____', `<span class="bg-yellow-200 px-2 py-1 rounded font-bold">${question.answer}</span>`)}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="grid md:grid-cols-2 gap-4 mb-4">
+                        <div class="bg-white rounded-xl p-4 border-2 ${isCorrect ? 'border-green-300' : 'border-red-300'}">
+                            <p class="text-sm font-semibold text-gray-600 mb-2">คำตอบของคุณ:</p>
+                            <p class="text-lg font-bold ${isCorrect ? 'text-green-600' : 'text-red-600'}">${userAnswer}</p>
+                        </div>
+                        <div class="bg-white rounded-xl p-4 border-2 border-green-300">
+                            <p class="text-sm font-semibold text-gray-600 mb-2">คำตอบที่ถูกต้อง:</p>
+                            <p class="text-lg font-bold text-green-600">${question.answer}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-blue-50 rounded-xl p-4 border-2 border-blue-200">
+                        <p class="text-sm font-semibold text-blue-800 mb-2">💡 คำอธิบาย:</p>
+                        <p class="text-blue-700 leading-relaxed"><strong>"${question.answer}"</strong> ${explanations[question.answer]}</p>
+                    </div>
+                `;
+                
+                answerReviewContainer.appendChild(reviewDiv);
+            });
+        }
+
+        restartBtn.addEventListener('click', function() {
+            userAnswers = {};
+            resultScreen.classList.add('hidden');
+            stageSelectScreen.classList.remove('hidden');
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'995f51a0402a8954',t:'MTc2MTcwNTczOC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
